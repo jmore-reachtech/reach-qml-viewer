@@ -1,24 +1,28 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef CONNECTION_H
+#define CONNECTION_H
 
-#include <QMainWindow>
-#include <QDeclarativeView>
-#include <QDeclarativeContext>
+#include <QObject>
 #include <QtNetwork>
 #include <QTimer>
 
-class MainWindow : public QDeclarativeView
+#include "systemdefs.h"
+
+class Connection : public QObject
 {
     Q_OBJECT
-    
 public:
-    explicit MainWindow(QWidget *parent = 0);
-    ~MainWindow();
-
-    void init();
-
+    explicit Connection(QObject *parent = 0);
+    ~Connection();
+    
+signals:
+    
 public slots:
     void sendMessage(const QString &message);
+
+signals:
+    void connectionOpen();
+    void connectionClosed();
+    void messageAvailable(const QByteArray &message);
 
 private slots:
     void onSocketConnected();
@@ -28,10 +32,10 @@ private slots:
     void onSocketStateChange(QLocalSocket::LocalSocketState );
     void tryConnect();
     void onConnectTimerTimeout();
-    
+
 private:
     QLocalSocket *m_socket;
     QTimer *m_connectTimer;
 };
 
-#endif // MAINWINDOW_H
+#endif // CONNECTION_H

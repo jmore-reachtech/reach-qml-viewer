@@ -1,57 +1,49 @@
-#include "mainwindow.h"
+#include "connection.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QDeclarativeView(parent), m_socket(new QLocalSocket(this)), m_connectTimer(new QTimer(this))
+Connection::Connection(QObject *parent) :
+    QObject(parent)
+  , m_socket(new QLocalSocket(this))
+  , m_connectTimer(new QTimer(this))
 {
-    this->setSource(QUrl::fromLocalFile("/home/reach/Projects/reach-apps/demo-qml/content/mainview.qml" ) );
-    this->setResizeMode(QDeclarativeView::SizeRootObjectToView);
-
-    this->rootContext()->setContextProperty("connection", this);
-
     connect(m_socket,SIGNAL(connected()),this,SLOT(onSocketConnected()));
     connect(m_socket,SIGNAL(disconnected()),this,SLOT(onSocketDisconnected()));
     connect(m_socket,SIGNAL(readyRead()),this,SLOT(onSocketReadyRead()));
     connect(m_socket,SIGNAL(stateChanged(QLocalSocket::LocalSocketState)),this,SLOT(onSocketStateChange(QLocalSocket::LocalSocketState)));
     connect(m_connectTimer, SIGNAL(timeout()), SLOT(onConnectTimerTimeout()));
+
+    m_connectTimer->start(1000);
 }
 
-MainWindow::~MainWindow()
+Connection::~Connection()
 {
-    qDebug() << "mainwindow destructor";
+    qDebug() << "connection destructor";
     if(m_socket->isOpen()) {
         qDebug() << "closing socket";
-        m_socket->write("goodbye from Qt");
-        m_socket->flush();
         m_socket->close();
     }
     delete m_socket;
+    delete m_connectTimer;
 }
 
-void MainWindow::init()
-{
-    tryConnect();
-}
-
-void MainWindow::sendMessage(const QString &message)
-{
-    m_socket->write(message.toLatin1());
-}
-
-void MainWindow::onSocketConnected()
+void Connection::onSocketConnected()
 {
     qDebug() << "socket connected";
     m_connectTimer->stop();
 
-    m_socket->write("hello from Qt");
+    sendMessage("hello from Qt");
+
+    emit connectionOpen();
 }
 
-void MainWindow::onSocketDisconnected()
+void Connection::onSocketDisconnected()
 {
     qDebug() << "socket disconnected";
     m_connectTimer->start(5000);
+
+    emit connectionClosed();
 }
 
-void MainWindow::onSocketError(QLocalSocket::LocalSocketError socketError)
+void Connection::onSocketError(QLocalSocket::LocalSocketError socketError)
 {
     switch (socketError) {
          case QLocalSocket::ServerNotFoundError:
@@ -67,12 +59,18 @@ void MainWindow::onSocketError(QLocalSocket::LocalSocketError socketError)
     }
 }
 
-void MainWindow::onSocketReadyRead()
+void Connection::onSocketReadyRead()
 {
-    qDebug() << "socket ready read";
+    qDebug() << "data available on socket";
+    while (m_socket->canReadLine()) {
+        qDebug() << "message available on socket";
+        QByteArray ba = m_socket->readLine();
+
+        emit messageAvailable(ba);
+    }
 }
 
-void MainWindow::onSocketStateChange(QLocalSocket::LocalSocketState socketState)
+void Connection::onSocketStateChange(QLocalSocket::LocalSocketState socketState)
 {
     switch(socketState) {
         case QLocalSocket::UnconnectedState:
@@ -84,21 +82,37 @@ void MainWindow::onSocketStateChange(QLocalSocket::LocalSocketState socketState)
         case QLocalSocket::ClosingState:
             qDebug() << "socket state ClosingState"; break;
         default:
-            qDebug() << "unknow state"; break;
+            qDebug() << "unknown state"; break;
     }
 }
 
-void MainWindow::tryConnect()
+void Connection::sendMessage(const QString &message)
+{
+    qDebug() << "sending message: " << message;
+    m_socket->write(message.toLatin1() + MESSAGE_TERMINATOR);
+}
+
+void Connection::tryConnect()
 {
     m_connectTimer->stop();
 
-    m_socket->connectToServer("/tmp/demo_socket",QIODevice::ReadWrite);
+    QSettings settings(SYSTEM_SETTINGS_FILE,QSettings::NativeFormat);
+    settings.beginGroup(SYSTEM_SETTINGS_SECTION);
+
+    m_socket->connectToServer(settings.value("socket_path").toString());
+    settings.endGroup();
     if (!m_socket->waitForConnected(1000)) {
+        qDebug() << "could not connect: setting retry timer";
         m_connectTimer->start(5000);
+    } else {
+        qDebug() << "conection isValid" << m_socket->isValid();
+        qDebug() << "conection bytesAvailable" << m_socket->bytesAvailable();
+        qDebug() << "conection isReadable" << m_socket->isReadable();
     }
 }
 
-void MainWindow::onConnectTimerTimeout()
+void Connection::onConnectTimerTimeout()
 {
     tryConnect();
 }
+

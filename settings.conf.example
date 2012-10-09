@@ -1,0 +1,5 @@
+[System]
+main_view="/home/jhorn/Projects/qml-tester/content/main.qml"
+socket_path="/tmp/demo_socket"
+enable_ack=true
+

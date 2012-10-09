@@ -1,31 +1,28 @@
+#include <QApplication>
+#include <QSettings>
 
-#include <QtGui/QApplication>
-#include <QDebug>
+#include "mainview.h"
+#include "systemdefs.h"
 
-#include "mainwindow.h"
-
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
-  QApplication app(argc, argv);
-  bool m_maximized = true;
-  bool m_enableCursor = false;
+    QApplication app(argc, argv);
 
-  QStringList args = app.arguments();
+    QApplication::setOrganizationName("Reach Technology");
+    QApplication::setOrganizationDomain("reachtech.com");
+    QApplication::setApplicationName("Qml Viewer");
+    QSettings::setPath(QSettings::NativeFormat,QSettings::SystemScope,".");
 
-  foreach (QString item, args) {
-      if(item == "--disable-full-screen") {m_maximized = false;}
-      if(item == "--enable-cursor") {m_enableCursor = true;}
-  }
+    QSettings settings(SYSTEM_SETTINGS_FILE,QSettings::NativeFormat);
+    settings.beginGroup(SYSTEM_SETTINGS_SECTION);
 
-  MainWindow mw;
-  if(m_maximized) {
-      mw.showFullScreen();
-  }
-  if(! m_enableCursor) {
-      mw.setCursor(QCursor( Qt::BlankCursor ));
-  }
-  mw.show();
+    MainView w;
+    w.setSource(QUrl::fromLocalFile(settings.value("main_view").toString()));
+    w.enableLookupAck(settings.value("enable_ack").toBool());
+    w.setResizeMode(QDeclarativeView::SizeRootObjectToView);
+    settings.endGroup();
 
-  return app.exec();
+    w.show();
+    
+    return app.exec();
 }
-
