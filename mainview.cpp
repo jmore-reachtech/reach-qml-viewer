@@ -78,7 +78,7 @@ void MainView::onConnectionClosed()
 
 void MainView::onHeartbeatTimerTimeout()
 {
-    qDebug() << "sending ping";
+    qDebug() << "sending heartbeat";
     m_connection->sendMessage("ping");
 }
 

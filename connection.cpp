@@ -30,7 +30,7 @@ void Connection::onSocketConnected()
     qDebug() << "socket connected";
     m_connectTimer->stop();
 
-    sendMessage("hello from Qt");
+    sendMessage("wakeup");
 
     emit connectionOpen();
 }
@@ -88,8 +88,21 @@ void Connection::onSocketStateChange(QLocalSocket::LocalSocketState socketState)
 
 void Connection::sendMessage(const QString &message)
 {
-    qDebug() << "sending message: " << message;
-    m_socket->write(message.toLatin1() + MESSAGE_TERMINATOR);
+    //TODO: revisit
+    QString msg(message);
+    int sent = 0;
+
+    qDebug() << "sending message: " << msg;
+    sent = m_socket->write(msg.append(MESSAGE_TERMINATOR).toLatin1());
+    if(sent == -1) {
+        qDebug() << "socket->write() error" << __FUNCTION__;
+    }
+
+    if (m_socket->bytesToWrite() > 0) {
+        if(m_socket->flush()) {
+            qDebug() << "socket flushed";
+        }
+    }
 }
 
 void Connection::tryConnect()

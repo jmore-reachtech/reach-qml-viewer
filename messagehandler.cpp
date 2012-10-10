@@ -15,6 +15,12 @@ void MessageHandler::onMessageAvailable(QByteArray ba)
         return;
     }
 
+    // this for our heartbeat
+    if(msg == "pong") {
+        qDebug() << "got hearbeat";
+        return;
+    }
+
     if (msg.contains("=") && msg.contains(".")) {
         QList<QByteArray> value = msg.split('=');
         QList<QByteArray> item = value[0].split('.');

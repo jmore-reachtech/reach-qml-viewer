@@ -1,5 +1,6 @@
 [System]
-main_view="/home/jhorn/Projects/qml-tester/content/main.qml"
-socket_path="/tmp/demo_socket"
-enable_ack=true
+main_view="/home/jhorn/Projects/qml-dial/mainview.qml"
+socket_path="/tmp/tioSocket"
+enable_ack=false
+enable_heartbeat=false
 

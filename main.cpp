@@ -19,6 +19,7 @@ int main(int argc, char *argv[])
     MainView w;
     w.setSource(QUrl::fromLocalFile(settings.value("main_view").toString()));
     w.enableLookupAck(settings.value("enable_ack").toBool());
+    w.enableHeartbeat(settings.value("enable_heartbeat").toBool());
     w.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     settings.endGroup();
 
