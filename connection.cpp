@@ -112,7 +112,7 @@ void Connection::tryConnect()
     QSettings settings(SYSTEM_SETTINGS_FILE,QSettings::NativeFormat);
     settings.beginGroup(SYSTEM_SETTINGS_SECTION);
 
-    m_socket->connectToServer(settings.value("socket_path").toString());
+    m_socket->connectToServer(settings.value("socket_path","/tmp/tioAgent").toString());
     settings.endGroup();
     if (!m_socket->waitForConnected(1000)) {
         qDebug() << "could not connect: setting retry timer";

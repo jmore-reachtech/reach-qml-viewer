@@ -3,4 +3,6 @@ main_view="/home/jhorn/Projects/qml-dial/mainview.qml"
 socket_path="/tmp/tioSocket"
 enable_ack=false
 enable_heartbeat=false
+full_screen=true
+hide_curosr=true
 
