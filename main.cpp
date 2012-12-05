@@ -22,11 +22,11 @@ int main(int argc, char *argv[])
     w.enableHeartbeat(settings.value("enable_heartbeat",false).toBool());
     w.setResizeMode(QDeclarativeView::SizeRootObjectToView);
 
-    if (settings.value("full_screen",true).toBool()) {
+    if (settings.value("full_screen",false).toBool()) {
         w.showFullScreen();
     }
 
-    if (settings.value("hide_curosr",true).toBool()) {
+    if (settings.value("hide_curosr",false).toBool()) {
         w.setCursor(QCursor( Qt::BlankCursor ));
     }
 
