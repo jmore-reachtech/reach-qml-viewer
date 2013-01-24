@@ -18,6 +18,7 @@ signals:
     
 public slots:
     void sendMessage(const QString &message);
+    void updateValue(const QString &objectName, const QString &property, const QVariant &value);
 
 signals:
     void connectionOpen();

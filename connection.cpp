@@ -106,6 +106,11 @@ void Connection::sendMessage(const QString &message)
     }
 }
 
+void Connection::updateValue(const QString &objectName, const QString &property, const QVariant &value)
+{
+    sendMessage(objectName.toLatin1() + "." + property.toLatin1() + "=" + value.toByteArray());
+}
+
 void Connection::tryConnect()
 {
     m_connectTimer->stop();
