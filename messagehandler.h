@@ -12,7 +12,8 @@ public:
     explicit MessageHandler(QObject *parent = 0);
     
 signals:
-    void itemAvailable(const QString &item, const QString &property, const QVariant &value);
+    void messageAvailable(const QString &item, const QString &property, const QVariant &value);
+    void messageSyntaxError(const QByteArray &msg);
 
 public slots:
     void onMessageAvailable(QByteArray);

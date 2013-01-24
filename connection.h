@@ -36,6 +36,7 @@ private slots:
 private:
     QLocalSocket *m_socket;
     QTimer *m_connectTimer;
+    bool m_enableAck;
 };
 
 #endif // CONNECTION_H

@@ -25,9 +25,10 @@ void MessageHandler::onMessageAvailable(QByteArray ba)
         QList<QByteArray> value = msg.split('=');
         QList<QByteArray> item = value[0].split('.');
 
-        emit itemAvailable(QString(item[0]),QString(item[1]),QVariant(value[1]));
-        qDebug() << "item lookup: " << item[0] << item [1] << value[1];
+        emit messageAvailable(QString(item[0]),QString(item[1]),QVariant(value[1]));
+        qDebug() << "item available: " << item[0] << item [1] << value[1];
     } else {
+        emit messageSyntaxError(msg);
         qDebug() << "invalid message: " << msg;
     }
 }

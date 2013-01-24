@@ -2,8 +2,9 @@
 
 Connection::Connection(QObject *parent) :
     QObject(parent)
-  , m_socket(new QLocalSocket(this))
-  , m_connectTimer(new QTimer(this))
+  ,m_socket(new QLocalSocket(this))
+  ,m_connectTimer(new QTimer(this))
+  ,m_enableAck(false)
 {
     connect(m_socket,SIGNAL(connected()),this,SLOT(onSocketConnected()));
     connect(m_socket,SIGNAL(disconnected()),this,SLOT(onSocketDisconnected()));
@@ -113,6 +114,7 @@ void Connection::tryConnect()
     settings.beginGroup(SYSTEM_SETTINGS_SECTION);
 
     m_socket->connectToServer(settings.value("socket_path","/tmp/tioAgent").toString());
+    m_enableAck = settings.value("enable_ack",false).toBool();
     settings.endGroup();
     if (!m_socket->waitForConnected(1000)) {
         qDebug() << "could not connect: setting retry timer";

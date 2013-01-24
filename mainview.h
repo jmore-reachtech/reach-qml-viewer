@@ -18,7 +18,8 @@ public:
     bool HeartbeatEnabled();
 
 public slots:
-    void onItemAvailable(const QString &item, const QString &property, const QVariant &value);
+    void onMessageAvailable(const QString &item, const QString &property, const QVariant &value);
+    void onMessageSyntaxError(const QByteArray &msg);
     void enableLookupAck(bool enable);
     void enableHeartbeat(bool enable);
 
