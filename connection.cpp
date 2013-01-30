@@ -31,9 +31,7 @@ void Connection::onSocketConnected()
     qDebug() << "socket connected";
     m_connectTimer->stop();
 
-    sendMessage("wakeup");
-
-    emit connectionOpen();
+    emit connectionReady();
 }
 
 void Connection::onSocketDisconnected()

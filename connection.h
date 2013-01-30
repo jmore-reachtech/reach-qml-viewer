@@ -24,6 +24,7 @@ signals:
     void connectionOpen();
     void connectionClosed();
     void messageAvailable(const QByteArray &message);
+    void connectionReady();
 
 private slots:
     void onSocketConnected();

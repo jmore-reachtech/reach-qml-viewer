@@ -10,7 +10,7 @@ MainView::MainView(QWidget *parent) :
 {
     this->rootContext()->setContextProperty("connection", m_connection);
 
-    connect(m_connection,SIGNAL(connectionOpen()),this,SLOT(onConnectionOpen()));
+    connect(m_connection,SIGNAL(connectionReady()),this,SLOT(onConnectionReady()));
     connect(m_connection,SIGNAL(connectionClosed()),this,SLOT(onConnectionClosed()));
     connect(m_connection,SIGNAL(messageAvailable(QByteArray)),m_messageHandler,SLOT(onMessageAvailable(QByteArray)));
     connect(m_messageHandler,SIGNAL(messageAvailable(QString,QString,QVariant)),this,SLOT(onMessageAvailable(QString,QString,QVariant)));
@@ -75,7 +75,7 @@ void MainView::enableHeartbeat(bool enable)
     }
 }
 
-void MainView::onConnectionOpen()
+void MainView::onConnectionReady()
 {
     qDebug() << "connection open";
 }

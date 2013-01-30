@@ -23,10 +23,8 @@ public slots:
     void enableLookupAck(bool enable);
     void enableHeartbeat(bool enable);
 
-signals:
-
 private slots:
-    void onConnectionOpen();
+    void onConnectionReady();
     void onConnectionClosed();
     void onHeartbeatTimerTimeout();
 
