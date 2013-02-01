@@ -19,12 +19,15 @@ signals:
 public slots:
     void sendMessage(const QString &message);
     void updateValue(const QString &objectName, const QString &property, const QVariant &value);
+    void enableHeartbeat(int);
+    void disableHeartbeat();
 
 signals:
-    void connectionOpen();
-    void connectionClosed();
     void messageAvailable(const QByteArray &message);
-    void connectionReady();
+    void readyToSend();
+    void notReadyToSend();
+    void noHeartbeat();
+    void heartbeat();
 
 private slots:
     void onSocketConnected();
@@ -34,11 +37,16 @@ private slots:
     void onSocketStateChange(QLocalSocket::LocalSocketState );
     void tryConnect();
     void onConnectTimerTimeout();
+    void onHeartbeatTimerTimeout();
 
 private:
     QLocalSocket *m_socket;
     QTimer *m_connectTimer;
-    bool m_enableAck;
+    bool    m_enableAck;
+    bool    m_hearbeat;
+    int     m_heartbeat_interval;
+    QTimer  *m_hearbeatTimer;
 };
 
 #endif // CONNECTION_H
+

@@ -10,8 +10,8 @@ MainView::MainView(QWidget *parent) :
 {
     this->rootContext()->setContextProperty("connection", m_connection);
 
-    connect(m_connection,SIGNAL(connectionReady()),this,SLOT(onConnectionReady()));
-    connect(m_connection,SIGNAL(connectionClosed()),this,SLOT(onConnectionClosed()));
+    connect(m_connection,SIGNAL(readyToSend()),this,SLOT(onConnectionReady()));
+    connect(m_connection,SIGNAL(notReadyToSend()),this,SLOT(onConnectionClosed()));
     connect(m_connection,SIGNAL(messageAvailable(QByteArray)),m_messageHandler,SLOT(onMessageAvailable(QByteArray)));
     connect(m_messageHandler,SIGNAL(messageAvailable(QString,QString,QVariant)),this,SLOT(onMessageAvailable(QString,QString,QVariant)));
     connect(m_messageHandler,SIGNAL(messageSyntaxError(QByteArray)),this,SLOT(onMessageSyntaxError(QByteArray)));

@@ -15,18 +15,16 @@ void MessageHandler::onMessageAvailable(QByteArray ba)
         return;
     }
 
-    // this for our heartbeat
-    if(msg == "pong") {
-        qDebug() << "got hearbeat";
-        return;
-    }
-
     if (msg.contains("=") && msg.contains(".")) {
         QList<QByteArray> value = msg.split('=');
         QList<QByteArray> item = value[0].split('.');
 
-        emit messageAvailable(QString(item[0]),QString(item[1]),QVariant(value[1]));
-        qDebug() << "item available: " << item[0] << item [1] << value[1];
+        if(value.count() != 2 && item.count() != 2) {
+            emit messageSyntaxError(msg);
+        } else {
+            emit messageAvailable(QString(item[0]),QString(item[1]),QVariant(value[1]));
+            qDebug() << "item available: " << item[0] << item [1] << value[1];
+        }
     } else {
         emit messageSyntaxError(msg);
         qDebug() << "invalid message: " << msg;
