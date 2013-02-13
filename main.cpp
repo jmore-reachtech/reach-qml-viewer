@@ -11,6 +11,17 @@ int main(int argc, char *argv[])
     QApplication::setOrganizationName("Reach Technology");
     QApplication::setOrganizationDomain("reachtech.com");
     QApplication::setApplicationName("Qml Viewer");
+    QApplication::setApplicationVersion(APP_VERSION);
+
+    QStringList args = app.arguments();
+
+    foreach (QString item, args) {
+        if(item == "--version" || item == "-v") {
+            qDebug() << "QML Viewer " << APP_VERSION;
+            return 0;
+        }
+    }
+
     QSettings::setPath(QSettings::NativeFormat,QSettings::SystemScope,".");
 
     QSettings settings(SYSTEM_SETTINGS_FILE,QSettings::NativeFormat);

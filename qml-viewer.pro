@@ -4,6 +4,9 @@
 #
 #-------------------------------------------------
 
+# this needs to stat in sync with the Makefile
+VERSION = 1.0.3
+
 QT       += network declarative
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -11,6 +14,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = qml-viewer
 TEMPLATE = app
 
+# add #define for the version
+DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 
 SOURCES += main.cpp\
     connection.cpp \
