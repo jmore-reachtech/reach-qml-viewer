@@ -56,7 +56,6 @@ void MainView::onMessageSyntaxError(const QByteArray &msg)
 {
     if(m_enableAck) {
         m_connection->sendMessage("SYNERR");
-        m_connection->sendMessage(msg);
     }
 }
 
