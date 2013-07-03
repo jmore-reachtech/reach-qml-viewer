@@ -4,8 +4,8 @@
 #
 #-------------------------------------------------
 
-# this needs to stat in sync with the Makefile
-VERSION = 1.0.3
+# this needs to stay in sync with the Makefile
+VERSION = 1.0.4
 
 QT       += network declarative
 

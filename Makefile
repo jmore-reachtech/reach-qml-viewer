@@ -1,5 +1,5 @@
 package = qml-viewer
-version = 1.0.3
+version = 1.0.4
 tarname = $(package)
 distdir = $(tarname)-$(version)
 
