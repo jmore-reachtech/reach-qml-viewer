@@ -22,8 +22,6 @@ int main(int argc, char *argv[])
         }
     }
 
-    QSettings::setPath(QSettings::NativeFormat,QSettings::SystemScope,".");
-
     QSettings settings(SYSTEM_SETTINGS_FILE,QSettings::NativeFormat);
     settings.beginGroup(SYSTEM_SETTINGS_SECTION);
 
