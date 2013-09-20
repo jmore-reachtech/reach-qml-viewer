@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 # this needs to stay in sync with the Makefile
-VERSION = 1.0.4
+VERSION = 1.0.5
 
 QT       += network declarative
 
