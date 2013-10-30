@@ -3,12 +3,14 @@
 MainView::MainView(QWidget *parent) :
     QDeclarativeView(parent)
   ,m_connection(new Connection(this))
+  ,m_system(new System(this))
   ,m_messageHandler(new MessageHandler)
   ,m_enableAck(false)
   ,m_enableHeartbeat(false)
   ,m_heartbeatTimer(new QTimer(this))
 {
     this->rootContext()->setContextProperty("connection", m_connection);
+    this->rootContext()->setContextProperty("system", m_system);
 
     connect(m_connection,SIGNAL(readyToSend()),this,SLOT(onConnectionReady()));
     connect(m_connection,SIGNAL(notReadyToSend()),this,SLOT(onConnectionClosed()));

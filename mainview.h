@@ -7,6 +7,7 @@
 
 #include "connection.h"
 #include "messagehandler.h"
+#include "system.h"
 
 class MainView : public QDeclarativeView
 {
@@ -30,6 +31,7 @@ private slots:
 
 private:
     Connection *m_connection;
+    System *m_system;
     MessageHandler *m_messageHandler;
     bool m_enableAck;
     bool m_enableHeartbeat;
