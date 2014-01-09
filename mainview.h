@@ -7,6 +7,7 @@
 
 #include "connection.h"
 #include "messagehandler.h"
+#include "module.h"
 
 class MainView : public QDeclarativeView
 {
@@ -34,6 +35,7 @@ private:
     bool m_enableAck;
     bool m_enableHeartbeat;
     QTimer *m_heartbeatTimer;
+    Module *m_module;
 };
 
 #endif // MAINVIEW_H

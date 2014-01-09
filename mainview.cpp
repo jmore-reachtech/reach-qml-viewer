@@ -7,8 +7,10 @@ MainView::MainView(QWidget *parent) :
   ,m_enableAck(false)
   ,m_enableHeartbeat(false)
   ,m_heartbeatTimer(new QTimer(this))
+  ,m_module(new Module(this))
 {
     this->rootContext()->setContextProperty("connection", m_connection);
+    this->rootContext()->setContextProperty("display", m_module);
 
     connect(m_connection,SIGNAL(readyToSend()),this,SLOT(onConnectionReady()));
     connect(m_connection,SIGNAL(notReadyToSend()),this,SLOT(onConnectionClosed()));
