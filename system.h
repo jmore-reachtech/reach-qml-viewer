@@ -7,12 +7,10 @@
 #include <QObject>
 #include <QDebug>
 
-#define PWM4_TRIGGER "/sys/class/leds/beeper-pwm4/trigger"
-#define PWM7_TRIGGER "/sys/class/leds/beeper-pwm7/trigger"
-#define PWM4_DELAY_ON "/sys/class/leds/beeper-pwm4/delay_on"
-#define PWM4_DELAY_OFF "/sys/class/leds/beeper-pwm4/delay_off"
-#define PWM7_DELAY_ON "/sys/class/leds/beeper-pwm7/delay_on"
-#define PWM7_DELAY_OFF "/sys/class/leds/beeper-pwm7/delay_off"
+#define BEEPER "/sys/kernel/beeper/beep"
+#define VOLUME "/sys/kernel/beeper/vol"
+#define FREQUENCY "/sys/kernel/beeper/freq"
+#define DURATION "/sys/kernel/beeper/duration"
 
 class System : public QObject
 {
@@ -24,27 +22,18 @@ public:
 public slots:
     void beep();
     void setVolume(int volume);
+    int  getVolume(void);
     void setFrequency(int freq);
-
-private slots:
-    void systemSleep(int ms);
+    int  getFrequency(void);
+    void setDuration(int duration);
+    int  getDuration(void);
 
 private:
-    QFile m_pwm4_trigger;
-    QFile m_pwm4_delay_on;
-    QFile m_pwm4_delay_off;
-    QFile m_pwm7_trigger;
-    QFile m_pwm7_delay_on;
-    QFile m_pwm7_delay_off;
-    int m_volume;
-    int m_freq;
-    int m_clock_period;       // PWM clock is 24Mhz/4 = 167ns
-    int m_pwm_freq;           // Volume PWM is fixed at 20Khz, duty cycle varies
-    // number of clocks on & off for desired volume
-    int m_period_one_on;
-    int m_period_one_off;
-    // number of clocks in a half cycle for desired frequency
-    int m_period_two;
+    QFile m_beeper;
+    QFile m_volume;
+    QFile m_frequency;
+    QFile m_duration;
+    QTextStream m_beeper_out;
 };
 
 #endif // SYSTEM_H

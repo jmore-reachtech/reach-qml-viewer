@@ -1,151 +1,83 @@
 #include "system.h"
 
 System::System(QObject *parent) : QObject(parent)
-  ,m_pwm4_trigger(PWM4_TRIGGER)
-  ,m_pwm4_delay_on(PWM4_DELAY_ON)
-  ,m_pwm4_delay_off(PWM4_DELAY_OFF)
-  ,m_pwm7_trigger(PWM7_TRIGGER)
-  ,m_pwm7_delay_on(PWM7_DELAY_ON)
-  ,m_pwm7_delay_off(PWM7_DELAY_OFF)
-  ,m_volume(0)
-  ,m_freq(3000)
-  ,m_clock_period(167)
-  ,m_pwm_freq(20000)
+  ,m_beeper(BEEPER)
+  ,m_volume(VOLUME)
+  ,m_frequency(FREQUENCY)
+  ,m_duration(DURATION)
+  ,m_beeper_out()
 {
-    m_pwm4_trigger.open(QIODevice::ReadWrite);
-    m_pwm4_delay_on.open(QIODevice::ReadWrite);
-    m_pwm4_delay_off.open(QIODevice::ReadWrite);
-    m_pwm7_trigger.open(QIODevice::ReadWrite);
-    m_pwm7_delay_on.open(QIODevice::ReadWrite);
-    m_pwm7_delay_off.open(QIODevice::ReadWrite);
+    m_beeper.open(QIODevice::ReadWrite);
+    m_volume.open(QIODevice::ReadWrite);
+    m_frequency.open(QIODevice::ReadWrite);
+    m_duration.open(QIODevice::ReadWrite);
 
-    //set up periods
-    m_period_one_on = (1000000000/(2*m_pwm_freq)/m_clock_period*m_volume/100);
-    m_period_one_off = (1000000000/(2*m_pwm_freq)/m_clock_period*(100-m_volume)/100);
-    m_period_two = (1000000000/(2*m_freq)/m_clock_period);
-
-    //    QTextStream out(&m_pwm4_trigger);
-    //    //set the trigger
-    //    if(m_pwm4_trigger.isOpen()) {
-    //        qDebug() << "setting m_pwm4_trigger";
-    //        out << "timer" << endl;
-    //    }
-
-    //    out.setDevice(&m_pwm7_trigger);
-    //    if(m_pwm7_trigger.isOpen()) {
-    //        out << "timer" << endl;
-    //        qDebug() << "setting m_pwm7_trigger";
-    //    }
-
-    qDebug() << "m_volume = " << m_volume;
-    qDebug() << "m_freq = " << m_volume;
-    qDebug() << "m_clock_period = " << m_clock_period;
-    qDebug() << "m_pwm_freq = " << m_pwm_freq;
-    qDebug() << "m_period_one_on = " << m_period_one_on;
-    qDebug() << "m_period_one_off = " << m_period_one_off;
-    qDebug() << "m_period_two = " << m_period_two;
+    m_beeper_out.setDevice(&m_beeper);
 }
 
 System::~System()
 {
-    if(m_pwm4_trigger.isOpen()) {
-        m_pwm4_trigger.close();
+    if(m_beeper.isOpen()) {
+        m_beeper.close();
     }
 
-    if(m_pwm4_delay_on.isOpen()) {
-        m_pwm4_delay_on.close();
+    if(m_volume.isOpen()) {
+        m_volume.close();
     }
 
-    if(m_pwm4_delay_off.isOpen()) {
-        m_pwm4_delay_off.close();
+    if(m_frequency.isOpen()) {
+        m_frequency.close();
     }
 
-    if(m_pwm7_trigger.isOpen()) {
-        m_pwm7_trigger.close();
-    }
-
-    if(m_pwm7_delay_on.isOpen()) {
-        m_pwm7_delay_on.close();
-    }
-
-    if(m_pwm7_delay_off.isOpen()) {
-        m_pwm7_delay_off.close();
+    if(m_duration.isOpen()) {
+        m_duration.close();
     }
 }
 
 void System::beep()
 {
-    /* set volume */
-    m_period_one_on = (1000000000/(2*m_pwm_freq)/m_clock_period*m_volume/100);
-    m_period_one_off = (1000000000/(2*m_pwm_freq)/m_clock_period*(100-m_volume)/100);
-    m_period_two = (1000000000/(2*m_freq)/m_clock_period);
-
-    qDebug() << endl;
-    qDebug() << "m_volume = " << m_volume;
-    qDebug() << "m_freq = " << m_volume;
-    qDebug() << "m_clock_period = " << m_clock_period;
-    qDebug() << "m_pwm_freq = " << m_pwm_freq;
-    qDebug() << "m_period_one_on = " << m_period_one_on;
-    qDebug() << "m_period_one_off = " << m_period_one_off;
-    qDebug() << "m_period_two = " << m_period_two;
-    qDebug() << endl;
-
-    QTextStream out(&m_pwm4_delay_on);
-    out << QString::number(m_period_one_on).toLatin1() << endl;
-
-    out.setDevice(&m_pwm4_delay_off);
-    out << QString::number(m_period_one_off).toLatin1() << endl;
-
-    out.setDevice(&m_pwm7_delay_on);
-    out << QString::number(m_period_two).toLatin1() << endl;
-
-    out.setDevice(&m_pwm7_delay_off);
-    out << QString::number(m_period_two).toLatin1() << endl;
-
-    /* turn down volume */
-    m_period_one_on = (1000000000/(2*m_pwm_freq)/m_clock_period*0/100);
-    m_period_one_off = (1000000000/(2*m_pwm_freq)/m_clock_period*(100-0)/100);
-
-    systemSleep(100);
-
-    out.setDevice(&m_pwm4_delay_on);
-    out << QString::number(m_period_one_on).toLatin1() << endl;
-
-    out.setDevice(&m_pwm4_delay_off);
-    out << QString::number(m_period_one_off).toLatin1() << endl;
-
-    out.setDevice(&m_pwm7_delay_on);
-    out << QString::number(m_period_two).toLatin1() << endl;
-
-    out.setDevice(&m_pwm7_delay_off);
-    out << QString::number(m_period_two).toLatin1() << endl;
-
-    qDebug() << endl;
-    qDebug() << "m_volume = " << m_volume;
-    qDebug() << "m_freq = " << m_volume;
-    qDebug() << "m_clock_period = " << m_clock_period;
-    qDebug() << "m_pwm_freq = " << m_pwm_freq;
-    qDebug() << "m_period_one_on = " << m_period_one_on;
-    qDebug() << "m_period_one_off = " << m_period_one_off;
-    qDebug() << "m_period_two = " << m_period_two;
-    qDebug() << endl;
-
+    m_beeper_out << QString::number(1).toLatin1() << endl;
 }
 
 void System::setVolume(int volume)
 {
-    m_volume = volume;
+    QTextStream out(&m_volume);
+    out << QString::number(volume).toLatin1() << endl;
+}
+
+int System::getVolume()
+{
+    QTextStream in(&m_volume);
+    QString s = in.readLine();
+
+    return s.toInt();
 }
 
 void System::setFrequency(int freq)
 {
-    m_freq = freq;
+    QTextStream out(&m_frequency);
+    out << QString::number(freq).toLatin1() << endl;
 }
 
-void System::systemSleep(int ms)
+int System::getFrequency()
 {
-    if(ms <= 0) {return;}
+    QTextStream in(&m_frequency);
+    QString s = in.readLine();
 
-    struct timespec ts = { ms / 1000, (ms % 1000) * 1000 * 1000 };
-    nanosleep(&ts, NULL);
+    return s.toInt();
 }
+
+void System::setDuration(int duration)
+{
+    QTextStream out(&m_duration);
+    out << QString::number(duration).toLatin1() << endl;
+}
+
+int System::getDuration()
+{
+    QTextStream in(&m_duration);
+    QString s = in.readLine();
+
+    return s.toInt();
+}
+
