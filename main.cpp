@@ -27,6 +27,8 @@ int main(int argc, char *argv[])
 
     MainView w;
     w.setSource(QUrl::fromLocalFile(settings.value("main_view").toString()));
+    qDebug() << settings.value("main_view").toString();
+
     w.enableLookupAck(settings.value("enable_ack",false).toBool());
     w.enableHeartbeat(settings.value("enable_heartbeat",false).toBool());
     w.setResizeMode(QDeclarativeView::SizeRootObjectToView);
