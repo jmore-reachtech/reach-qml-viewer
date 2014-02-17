@@ -10,6 +10,7 @@
 *************************************************************************/
 #include <QApplication>
 #include <QSettings>
+#include <QFileInfo>
 
 #include "mainview.h"
 #include "systemdefs.h"
@@ -22,6 +23,7 @@ int main(int argc, char *argv[])
     QApplication::setOrganizationDomain("reachtech.com");
     QApplication::setApplicationName("Qml Viewer");
     QApplication::setApplicationVersion(APP_VERSION);
+    QFileInfo settingsFile;
 
     QStringList args = app.arguments();
 
@@ -32,7 +34,22 @@ int main(int argc, char *argv[])
         }
     }
 
-    QSettings settings(SYSTEM_SETTINGS_FILE,QSettings::NativeFormat);
+    QString sb(QApplication::applicationDirPath());
+    sb.append(QDir::separator());
+    sb.append("settings.conf");
+    // check to see if we have a settings file where we started from
+    // if not fall back to system hard coded path
+    QFileInfo file(sb.toLatin1());
+    if (file.exists()) {
+        qDebug() << "using local settings file";
+        settingsFile.setFile(file.filePath());
+    } else {
+        qDebug() << "using system defined settings file";
+        settingsFile.setFile(SYSTEM_SETTINGS_FILE);
+    }
+
+    QSettings settings(settingsFile.filePath(),QSettings::NativeFormat);
+
     settings.beginGroup(SYSTEM_SETTINGS_SECTION);
 
     MainView w;
