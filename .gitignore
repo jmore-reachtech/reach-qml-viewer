@@ -1,3 +1,5 @@
 qml-viewer-0.1.pro.user
 qml-viewer.pro.user
 build/
+.*.swp
+
