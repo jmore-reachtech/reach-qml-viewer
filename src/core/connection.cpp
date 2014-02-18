@@ -130,7 +130,7 @@ void Connection::sendMessage(const QString &message)
     int sent = 0;
 
     qDebug() << "sending message: " << msg;
-    sent = m_socket->write(msg.append(MESSAGE_TERMINATOR).toLatin1());
+    sent = m_socket->write(msg.append("\n").toLatin1());
     if(sent == -1) {
         qDebug() << "socket->write() error" << __FUNCTION__;
     }
@@ -172,8 +172,8 @@ void Connection::tryConnect()
 {
     m_connectTimer->stop();
 
-    QSettings settings(SYSTEM_SETTINGS_FILE,QSettings::NativeFormat);
-    settings.beginGroup(SYSTEM_SETTINGS_SECTION);
+    QSettings settings("$HOME/setting.conf",QSettings::NativeFormat);
+    settings.beginGroup("system");
 
     m_socket->connectToServer(settings.value("socket_path","/tmp/tioAgent").toString());
     m_enableAck = settings.value("enable_ack",false).toBool();

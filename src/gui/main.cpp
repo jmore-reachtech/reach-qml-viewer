@@ -12,8 +12,7 @@
 #include <QSettings>
 #include <QFileInfo>
 
-#include "mainview.h"
-#include "systemdefs.h"
+#include "core/mainview.h"
 
 int main(int argc, char *argv[])
 {
@@ -45,12 +44,12 @@ int main(int argc, char *argv[])
         settingsFile.setFile(file.filePath());
     } else {
         qDebug() << "using system defined settings file";
-        settingsFile.setFile(SYSTEM_SETTINGS_FILE);
+        settingsFile.setFile("/application/src/settings.conf");
     }
 
     QSettings settings(settingsFile.filePath(),QSettings::NativeFormat);
 
-    settings.beginGroup(SYSTEM_SETTINGS_SECTION);
+    settings.beginGroup("system");
 
     MainView w;
     w.setSource(QUrl::fromLocalFile(settings.value("main_view").toString()));
