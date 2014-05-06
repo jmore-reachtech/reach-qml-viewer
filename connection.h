@@ -57,10 +57,10 @@ private:
     QTimer *m_connectTimer;
     bool    m_enableAck;
     bool    m_hearbeat;
-    int     m_heartbeat_interval;
-    QTimer  *m_hearbeatTimer;
     QString m_heartbeatText;
     QString m_heartbeatResponseText;
+    int     m_heartbeat_interval;
+    QTimer  *m_hearbeatTimer;
 };
 
 #endif // CONNECTION_H

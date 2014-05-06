@@ -39,7 +39,7 @@ private slots:
 private:
     Connection *m_connection;
     MessageHandler *m_messageHandler;
-    bool m_enableAck = false;
+    bool m_enableAck;
 };
 
 #endif // MAINVIEW_H

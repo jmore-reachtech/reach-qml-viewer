@@ -14,8 +14,8 @@
 MainView::MainView(QWidget *parent) :
     QDeclarativeView(parent)
   ,m_connection(new Connection(this))
-  ,m_enableAck(false)
   ,m_messageHandler(new MessageHandler)
+  ,m_enableAck(false)
 {
     this->rootContext()->setContextProperty("connection", m_connection);
 
