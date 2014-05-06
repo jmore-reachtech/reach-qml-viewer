@@ -15,5 +15,7 @@
 #define SYSTEM_SETTINGS_FILE "/application/src/settings.conf"
 #define SYSTEM_SETTINGS_SECTION "System"
 #define MESSAGE_TERMINATOR '\n'
+#define HEARTBEAT_TEXT "ping"
+#define HEARTBEAT_RESPONSE_TEXT "pong"
 
 #endif // SYSTEMDEFS_H

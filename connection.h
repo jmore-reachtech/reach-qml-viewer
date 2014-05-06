@@ -25,13 +25,14 @@ public:
     explicit Connection(QObject *parent = 0);
     ~Connection();
     
-signals:
-    
 public slots:
     void sendMessage(const QString &message);
     void updateValue(const QString &objectName, const QString &property, const QVariant &value);
     void enableHeartbeat(int);
+    void enableHeartbeat(int, QString, QString);
     void disableHeartbeat();
+    void enableLookupAck();
+    void disableLookupAck();
 
 signals:
     void messageAvailable(const QByteArray &message);
@@ -39,6 +40,7 @@ signals:
     void notReadyToSend();
     void noHeartbeat();
     void heartbeat();
+    void lookupAckChanged(bool);
 
 private slots:
     void onSocketConnected();
@@ -57,6 +59,8 @@ private:
     bool    m_hearbeat;
     int     m_heartbeat_interval;
     QTimer  *m_hearbeatTimer;
+    QString m_heartbeatText;
+    QString m_heartbeatResponseText;
 };
 
 #endif // CONNECTION_H

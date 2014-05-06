@@ -26,25 +26,20 @@ class MainView : public QDeclarativeView
 public:
     explicit MainView(QWidget *parent = 0);
     ~MainView();
-    bool HeartbeatEnabled();
 
 public slots:
     void onMessageAvailable(const QString &item, const QString &property, const QVariant &value);
     void onMessageSyntaxError(const QByteArray &msg);
     void enableLookupAck(bool enable);
-    void enableHeartbeat(bool enable);
 
 private slots:
     void onConnectionReady();
     void onConnectionClosed();
-    void onHeartbeatTimerTimeout();
 
 private:
     Connection *m_connection;
     MessageHandler *m_messageHandler;
-    bool m_enableAck;
-    bool m_enableHeartbeat;
-    QTimer *m_heartbeatTimer;
+    bool m_enableAck = false;
 };
 
 #endif // MAINVIEW_H

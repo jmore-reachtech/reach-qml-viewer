@@ -17,6 +17,8 @@ Connection::Connection(QObject *parent) :
   ,m_connectTimer(new QTimer(this))
   ,m_enableAck(false)
   ,m_hearbeat(true)
+  ,m_heartbeatText(HEARTBEAT_TEXT)
+  ,m_heartbeatResponseText(HEARTBEAT_RESPONSE_TEXT)
   ,m_heartbeat_interval(0)
   ,m_hearbeatTimer(new QTimer(this))
 {
@@ -27,7 +29,7 @@ Connection::Connection(QObject *parent) :
     connect(m_connectTimer, SIGNAL(timeout()),this,SLOT(onConnectTimerTimeout()));
     connect(m_hearbeatTimer,SIGNAL(timeout()),this,SLOT(onHeartbeatTimerTimeout()));
 
-    m_connectTimer->start(1000);
+    m_connectTimer->start(5000);
 }
 
 Connection::~Connection()
@@ -89,8 +91,8 @@ void Connection::onSocketReadyRead()
         QByteArray ba = m_socket->readLine();
 
         /* check for hearbeat - must be a pong */
-        if(ba.trimmed() == "pong") {
-            qDebug() << "got pong";
+        if(ba.trimmed() == m_heartbeatResponseText) {
+            qDebug() << "got " << m_heartbeatResponseText;
             if(m_hearbeatTimer->isActive()) {
                 m_hearbeat = true;
                 emit heartbeat();
@@ -149,35 +151,54 @@ void Connection::updateValue(const QString &objectName, const QString &property,
 
 void Connection::enableHeartbeat(int interval)
 {
-    qDebug() << "enabling hearbeat ";
-
+    qDebug() << "hearbeat enabled ";
     m_heartbeat_interval = interval;
+    m_hearbeatTimer->stop();
+    m_hearbeatTimer->start((m_heartbeat_interval * 1000));
+}
 
-    if(!m_hearbeatTimer->isActive()) {
-        m_hearbeatTimer->stop();
-        m_hearbeatTimer->start((m_heartbeat_interval * 1000));
-    }
+void Connection::enableHeartbeat(int interval, QString heartbeatText, QString heartbeatResponseText)
+{
+    qDebug() << "hearbeat enabled ";
+    m_heartbeatText = heartbeatText;
+    m_heartbeatResponseText = heartbeatResponseText;
+    m_heartbeat_interval = interval;
+    m_hearbeatTimer->stop();
+    m_hearbeatTimer->start((m_heartbeat_interval * 1000));
 }
 
 void Connection::disableHeartbeat()
 {
-    qDebug() << "disabling hearbeat ";
-
+    qDebug() << "hearbeat disabled ";
     if(m_hearbeatTimer->isActive()) {
         m_hearbeatTimer->stop();
     }
 }
 
+void Connection::disableLookupAck()
+{
+    m_enableAck = false;
+    emit lookupAckChanged(false);
+}
+
+void Connection::enableLookupAck()
+{
+    m_enableAck = true;
+    emit lookupAckChanged(true);
+}
+
 void Connection::tryConnect()
 {
+    bool startHeartbeat = false;
     m_connectTimer->stop();
 
     QSettings settings(SYSTEM_SETTINGS_FILE,QSettings::NativeFormat);
     settings.beginGroup(SYSTEM_SETTINGS_SECTION);
 
     m_socket->connectToServer(settings.value("socket_path","/tmp/tioAgent").toString());
-    m_enableAck = settings.value("enable_ack",false).toBool();
     m_heartbeat_interval = settings.value("hearbeat_interval",0).toInt();
+    startHeartbeat = settings.value("enable_heartbeat",false).toBool();
+
     settings.endGroup();
     if (!m_socket->waitForConnected(1000)) {
         qDebug() << "could not connect: setting retry timer";
@@ -188,10 +209,18 @@ void Connection::tryConnect()
         qDebug() << "conection isReadable" << m_socket->isReadable();
     }
 
-    /* set up heartbeat timer if set */
-    if(m_heartbeat_interval > 0) {
+    /* set up heartbeat if need be */
+    if (startHeartbeat)
+    {
         m_hearbeat = false;
-        m_hearbeatTimer->start((m_heartbeat_interval * 1000));
+        if(m_heartbeat_interval > 0) {
+            enableHeartbeat(m_heartbeat_interval);
+        }
+        else
+        {
+            /* interval was not provided - default to 5 seconds */
+            enableHeartbeat(5);
+        }
     }
 }
 
@@ -207,6 +236,6 @@ void Connection::onHeartbeatTimerTimeout()
         emit noHeartbeat();
     }
     m_hearbeat = false;
-    sendMessage("ping");
+    sendMessage(m_heartbeatText);
 }
 

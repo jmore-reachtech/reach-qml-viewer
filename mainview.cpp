@@ -14,29 +14,23 @@
 MainView::MainView(QWidget *parent) :
     QDeclarativeView(parent)
   ,m_connection(new Connection(this))
-  ,m_messageHandler(new MessageHandler)
   ,m_enableAck(false)
-  ,m_enableHeartbeat(false)
-  ,m_heartbeatTimer(new QTimer(this))
+  ,m_messageHandler(new MessageHandler)
 {
     this->rootContext()->setContextProperty("connection", m_connection);
 
     connect(m_connection,SIGNAL(readyToSend()),this,SLOT(onConnectionReady()));
     connect(m_connection,SIGNAL(notReadyToSend()),this,SLOT(onConnectionClosed()));
     connect(m_connection,SIGNAL(messageAvailable(QByteArray)),m_messageHandler,SLOT(onMessageAvailable(QByteArray)));
+    connect(m_connection,SIGNAL(lookupAckChanged(bool)),this,SLOT(enableLookupAck(bool)));
     connect(m_messageHandler,SIGNAL(messageAvailable(QString,QString,QVariant)),this,SLOT(onMessageAvailable(QString,QString,QVariant)));
     connect(m_messageHandler,SIGNAL(messageSyntaxError(QByteArray)),this,SLOT(onMessageSyntaxError(QByteArray)));
-    connect(m_heartbeatTimer,SIGNAL(timeout()),this,SLOT(onHeartbeatTimerTimeout()));
 }
 
 MainView::~MainView()
 {
 }
 
-bool MainView::HeartbeatEnabled()
-{
-    return m_enableHeartbeat;
-}
 
 void MainView::onMessageAvailable(const QString &item, const QString &property, const QVariant &value)
 {
@@ -73,15 +67,13 @@ void MainView::onMessageSyntaxError(const QByteArray &msg)
 void MainView::enableLookupAck(bool enable)
 {
     m_enableAck = enable;
-}
-
-void MainView::enableHeartbeat(bool enable)
-{
-    m_enableHeartbeat = enable;
-    if(m_enableHeartbeat) {
-        m_heartbeatTimer->start(5000);
-    } else {
-        m_heartbeatTimer->stop();
+    if (m_enableAck)
+    {
+        qDebug() << "Ack enabled";
+    }
+    else
+    {
+        qDebug() << "Ack disabled";
     }
 }
 
@@ -93,12 +85,6 @@ void MainView::onConnectionReady()
 void MainView::onConnectionClosed()
 {
     qDebug() << "connection closed";
-}
-
-void MainView::onHeartbeatTimerTimeout()
-{
-    qDebug() << "sending heartbeat";
-    m_connection->sendMessage("ping");
 }
 
 
