@@ -12,19 +12,18 @@
 #ifndef MAINVIEW_H
 #define MAINVIEW_H
 
-#include <QDeclarativeView>
-#include <QDeclarativeItem>
-#include <QDeclarativeContext>
-
+#include <QQuickView>
+#include <QQmlContext>
+#include <QQuickItem>
 #include "connection.h"
 #include "messagehandler.h"
 
-class MainView : public QDeclarativeView
+class MainView : public QQuickView
 {
     Q_OBJECT
     
 public:
-    explicit MainView(QWidget *parent = 0);
+    explicit MainView(QWindow *parent = 0);
     ~MainView();
 
 public slots:

@@ -11,8 +11,8 @@
 
 #include "mainview.h"
 
-MainView::MainView(QWidget *parent) :
-    QDeclarativeView(parent)
+MainView::MainView(QWindow *parent) :
+    QQuickView(parent)
   ,m_connection(new Connection(this))
   ,m_messageHandler(new MessageHandler)
   ,m_enableAck(false)
@@ -34,7 +34,7 @@ MainView::~MainView()
 
 void MainView::onMessageAvailable(const QString &item, const QString &property, const QVariant &value)
 {
-    QDeclarativeItem *obj = this->rootObject()->findChild<QDeclarativeItem*>(item);
+    QQuickItem *obj = this->rootObject()->findChild<QQuickItem*>(item);
     if(!obj) {
         qDebug() << "no item with objectName: " << item;
         if(m_enableAck) {
