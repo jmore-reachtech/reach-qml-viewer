@@ -11,6 +11,7 @@
 #include <QApplication>
 #include <QSettings>
 #include <QFileInfo>
+#include <QDeclarativeEngine>
 
 #include "mainview.h"
 #include "systemdefs.h"
@@ -64,6 +65,10 @@ int main(int argc, char *argv[])
     if (settings.value("hide_curosr",false).toBool()) {
         w.setCursor(QCursor( Qt::BlankCursor ));
     }
+
+    QString offlinePath = settings.value("offline_storage_path").toString();
+    if (offlinePath.length() > 0)
+            w.engine()->setOfflineStoragePath(offlinePath);
 
     settings.endGroup();
 

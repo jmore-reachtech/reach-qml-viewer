@@ -15,9 +15,11 @@ MainView::MainView(QWidget *parent) :
     QDeclarativeView(parent)
   ,m_connection(new Connection(this))
   ,m_messageHandler(new MessageHandler)
+  ,m_settings(new Settings(this))
   ,m_enableAck(false)
 {
     this->rootContext()->setContextProperty("connection", m_connection);
+    this->rootContext()->setContextProperty("settings", m_settings);
 
     connect(m_connection,SIGNAL(readyToSend()),this,SLOT(onConnectionReady()));
     connect(m_connection,SIGNAL(notReadyToSend()),this,SLOT(onConnectionClosed()));

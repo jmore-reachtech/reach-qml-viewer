@@ -1,0 +1,7 @@
+[Application]
+backlight_brightness=100
+backlight_enable=true
+beeper_duration=100
+beeper_frequency=1000
+beeper_volume=50
+password=1234

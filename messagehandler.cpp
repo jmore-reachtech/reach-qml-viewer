@@ -18,11 +18,7 @@ MessageHandler::MessageHandler(QObject *parent) :
 
 void MessageHandler::onMessageAvailable(QByteArray ba)
 {
-    //remove the last byte from ba which should be \n character
-    if (ba.endsWith("\n"))
-        ba.remove(ba.length()-1, 1);
-
-    QByteArray msg(ba);
+    QByteArray msg(ba.trimmed());
 
     //check for empty message
     if (msg.startsWith('\0')) {
@@ -44,5 +40,4 @@ void MessageHandler::onMessageAvailable(QByteArray ba)
         emit messageSyntaxError(msg);
         qDebug() << "invalid message: " << msg;
     }
-
 }
