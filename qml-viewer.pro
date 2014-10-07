@@ -5,11 +5,13 @@
 #-------------------------------------------------
 
 # this needs to stay in sync with the Makefile
-VERSION = 1.0.5
+VERSION = 1.0.6
 
-QT       += network declarative
+QT       += network
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+lessThan(QT_MAJOR_VERSION, 5): QT += declarative
+
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets quick
 
 TARGET = qml-viewer
 TEMPLATE = app
