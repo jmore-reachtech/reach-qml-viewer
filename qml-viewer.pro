@@ -5,13 +5,11 @@
 #-------------------------------------------------
 
 # this needs to stay in sync with the Makefile
-VERSION = 1.0.6
+VERSION = 1.0.1
 
-QT       += network
+QT       += network declarative quick
 
-lessThan(QT_MAJOR_VERSION, 5): QT += declarative
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets quick
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = qml-viewer
 TEMPLATE = app
@@ -22,11 +20,13 @@ DEFINES += APP_VERSION=\\\"$$VERSION\\\"
 SOURCES += main.cpp\
     connection.cpp \
     mainview.cpp \
-    messagehandler.cpp
+    messagehandler.cpp \
+    settings.cpp
 
 HEADERS  += \
     connection.h \
     mainview.h \
     messagehandler.h \
-    systemdefs.h
+    systemdefs.h \
+    settings.h
 

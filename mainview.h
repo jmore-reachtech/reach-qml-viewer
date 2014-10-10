@@ -17,6 +17,7 @@
 #include <QQuickItem>
 #include "connection.h"
 #include "messagehandler.h"
+#include "settings.h"
 
 class MainView : public QQuickView
 {
@@ -38,6 +39,7 @@ private slots:
 private:
     Connection *m_connection;
     MessageHandler *m_messageHandler;
+    Settings *m_settings;
     bool m_enableAck;
 };
 
