@@ -7,7 +7,7 @@
 # this needs to stay in sync with the Makefile
 VERSION = 1.0.1
 
-QT       += network declarative quick
+QT       += network quick
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
