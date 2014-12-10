@@ -38,7 +38,7 @@ void MainView::onMessageAvailable(const QString &item, const QString &property, 
 {
     QDeclarativeItem *obj = this->rootObject()->findChild<QDeclarativeItem*>(item);
     if(!obj) {
-        qDebug() << "no item with objectName: " << item;
+        qDebug() << "[QML] no item with objectName: " << item;
         if(m_enableAck) {
             m_connection->sendMessage("LUNO");
         }
@@ -47,7 +47,7 @@ void MainView::onMessageAvailable(const QString &item, const QString &property, 
 
     bool found = obj->setProperty(property.toLatin1(),value);
     if (!found) {
-        qDebug() << "no property on objectName: " << property;
+        qDebug() << "[QML] no property on objectName: " << property;
         if(m_enableAck) {
             m_connection->sendMessage("LUNP");
         }
@@ -71,22 +71,22 @@ void MainView::enableLookupAck(bool enable)
     m_enableAck = enable;
     if (m_enableAck)
     {
-        qDebug() << "Ack enabled";
+        qDebug() << "[QML] Ack enabled";
     }
     else
     {
-        qDebug() << "Ack disabled";
+        qDebug() << "[QML] Ack disabled";
     }
 }
 
 void MainView::onConnectionReady()
 {
-    qDebug() << "connection open";
+    qDebug() << "[QML] connection open";
 }
 
 void MainView::onConnectionClosed()
 {
-    qDebug() << "connection closed";
+    qDebug() << "[QML] connection closed";
 }
 
 
