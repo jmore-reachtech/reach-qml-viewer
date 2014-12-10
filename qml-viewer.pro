@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 # this needs to stay in sync with the Makefile
-VERSION = 1.0.1
+VERSION = 1.0.7
 
 QT       += network quick
 

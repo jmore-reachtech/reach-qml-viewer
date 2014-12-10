@@ -22,7 +22,7 @@ void MessageHandler::onMessageAvailable(QByteArray ba)
 
     //check for empty message
     if (msg.startsWith('\0')) {
-        qDebug() << "message handler: null message";
+        qDebug() << "[QML] message handler: null message";
         return;
     }
 
@@ -34,10 +34,10 @@ void MessageHandler::onMessageAvailable(QByteArray ba)
             emit messageSyntaxError(msg);
         } else {
             emit messageAvailable(QString(item[0]),QString(item[1]),QVariant(value[1]));
-            qDebug() << "item available: " << item[0] << item [1] << value[1];
+            qDebug() << "[QML] item available: " << item[0] << item [1] << value[1];
         }
     } else {
         emit messageSyntaxError(msg);
-        qDebug() << "invalid message: " << msg;
+        qDebug() << "[QML] invalid message: " << msg;
     }
 }

@@ -34,9 +34,9 @@ Connection::Connection(QObject *parent) :
 
 Connection::~Connection()
 {
-    qDebug() << "connection destructor";
+    qDebug() << "[QML] connection destructor";
     if(m_socket->isOpen()) {
-        qDebug() << "closing socket";
+        qDebug() << "[QML] closing socket";
         m_socket->close();
     }
     delete m_socket;
@@ -45,7 +45,7 @@ Connection::~Connection()
 
 void Connection::onSocketConnected()
 {
-    qDebug() << "socket connected";
+    qDebug() << "[QML] socket connected";
     m_connectTimer->stop();
 
     emit readyToSend();
@@ -53,7 +53,7 @@ void Connection::onSocketConnected()
 
 void Connection::onSocketDisconnected()
 {
-    qDebug() << "socket disconnected";
+    qDebug() << "[QML] socket disconnected";
     m_connectTimer->start(5000);
 
     emit notReadyToSend();
@@ -69,13 +69,13 @@ void Connection::onSocketError(QLocalSocket::LocalSocketError socketError)
 {
     switch (socketError) {
          case QLocalSocket::ServerNotFoundError:
-             qDebug() << "QLocalSocket::ServerNotFoundError";
+             qDebug() << "[QML] QLocalSocket::ServerNotFoundError";
              break;
          case QLocalSocket::ConnectionRefusedError:
-             qDebug() << "QLocalSocket::ConnectionRefusedError";
+             qDebug() << "[QML] QLocalSocket::ConnectionRefusedError";
              break;
          case QLocalSocket::PeerClosedError:
-             qDebug() << "QLocalSocket::PeerClosedError";
+             qDebug() << "[QML] QLocalSocket::PeerClosedError";
              break;
          default:
             qDebug() << m_socket->errorString();
@@ -85,14 +85,14 @@ void Connection::onSocketError(QLocalSocket::LocalSocketError socketError)
 
 void Connection::onSocketReadyRead()
 {
-    qDebug() << "data available on socket";
+    //qDebug() << "[QML] data available on socket";
     while (m_socket->canReadLine()) {
-        qDebug() << "message available on socket";
+        qDebug() << "[QML] message available on socket";
         QByteArray ba = m_socket->readLine();
 
         /* check for hearbeat - must be a pong */
         if(ba.trimmed() == m_heartbeatResponseText) {
-            qDebug() << "got " << m_heartbeatResponseText;
+            qDebug() << "[QML] got " << m_heartbeatResponseText;
             if(m_hearbeatTimer->isActive()) {
                 m_hearbeat = true;
                 emit heartbeat();
@@ -108,19 +108,19 @@ void Connection::onSocketStateChange(QLocalSocket::LocalSocketState socketState)
 {
     switch(socketState) {
         case QLocalSocket::UnconnectedState:
-            qDebug() << "socket state UnconnectedState";
+            qDebug() << "[QML] socket state UnconnectedState";
             break;
         case QLocalSocket::ConnectingState:
-            qDebug() << "socket state ConnectingState";
+            qDebug() << "[QML] socket state ConnectingState";
             break;
         case QLocalSocket::ConnectedState:
-            qDebug() << "socket state ConnectedState";
+            qDebug() << "[QML] socket state ConnectedState";
             break;
         case QLocalSocket::ClosingState:
-            qDebug() << "socket state ClosingState";
+            qDebug() << "[QML] socket state ClosingState";
             break;
         default:
-            qDebug() << "unknown state";
+            qDebug() << "[QML] unknown state";
             break;
     }
 }
@@ -131,15 +131,15 @@ void Connection::sendMessage(const QString &message)
     QString msg(message);
     int sent = 0;
 
-    qDebug() << "sending message: " << msg;
+    qDebug() << "[QML] sending => " << msg;
     sent = m_socket->write(msg.append(MESSAGE_TERMINATOR).toLatin1());
     if(sent == -1) {
-        qDebug() << "socket->write() error" << __FUNCTION__;
+        qDebug() << "[QML] socket->write() error" << __FUNCTION__;
     }
 
     if (m_socket->bytesToWrite() > 0) {
         if(m_socket->flush()) {
-            qDebug() << "socket flushed";
+            qDebug() << "[QML] socket flushed";
         }
     }
 }
@@ -151,7 +151,7 @@ void Connection::updateValue(const QString &objectName, const QString &property,
 
 void Connection::enableHeartbeat(int interval)
 {
-    qDebug() << "hearbeat enabled ";
+    qDebug() << "[QML] hearbeat enabled ";
     m_heartbeat_interval = interval;
     m_hearbeatTimer->stop();
     m_hearbeatTimer->start((m_heartbeat_interval * 1000));
@@ -159,7 +159,7 @@ void Connection::enableHeartbeat(int interval)
 
 void Connection::enableHeartbeat(int interval, QString heartbeatText, QString heartbeatResponseText)
 {
-    qDebug() << "hearbeat enabled ";
+    qDebug() << "[QML] hearbeat enabled ";
     m_heartbeatText = heartbeatText;
     m_heartbeatResponseText = heartbeatResponseText;
     m_heartbeat_interval = interval;
@@ -169,7 +169,7 @@ void Connection::enableHeartbeat(int interval, QString heartbeatText, QString he
 
 void Connection::disableHeartbeat()
 {
-    qDebug() << "hearbeat disabled ";
+    qDebug() << "[QML] hearbeat disabled ";
     if(m_hearbeatTimer->isActive()) {
         m_hearbeatTimer->stop();
     }
@@ -201,12 +201,12 @@ void Connection::tryConnect()
 
     settings.endGroup();
     if (!m_socket->waitForConnected(1000)) {
-        qDebug() << "could not connect: setting retry timer";
+        qDebug() << "[QML] could not connect: setting retry timer";
         m_connectTimer->start(5000);
     } else {
-        qDebug() << "conection isValid" << m_socket->isValid();
-        qDebug() << "conection bytesAvailable" << m_socket->bytesAvailable();
-        qDebug() << "conection isReadable" << m_socket->isReadable();
+        qDebug() << "[QML] conection isValid" << m_socket->isValid();
+        qDebug() << "[QML] conection bytesAvailable" << m_socket->bytesAvailable();
+        qDebug() << "[QML] conection isReadable" << m_socket->isReadable();
     }
 
     /* set up heartbeat if need be */

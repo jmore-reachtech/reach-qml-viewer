@@ -41,10 +41,10 @@ int main(int argc, char *argv[])
     // if not fall back to system hard coded path
     QFileInfo file(sb.toLatin1());
     if (file.exists()) {
-        qDebug() << "using local settings file";
+        qDebug() << "[QML] using local settings file";
         settingsFile.setFile(file.filePath());
     } else {
-        qDebug() << "using system defined settings file";
+        qDebug() << "[QML] using system defined settings file";
         settingsFile.setFile(SYSTEM_SETTINGS_FILE);
     }
 

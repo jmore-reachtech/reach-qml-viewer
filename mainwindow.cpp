@@ -28,9 +28,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    qDebug() << "mainwindow destructor";
+    qDebug() << "[QML] mainwindow destructor";
     if(m_socket->isOpen()) {
-        qDebug() << "closing socket";
+        qDebug() << "[QML] closing socket";
         m_socket->write("goodbye from Qt");
         m_socket->flush();
         m_socket->close();
@@ -50,7 +50,7 @@ void MainWindow::sendMessage(const QString &message)
 
 void MainWindow::onSocketConnected()
 {
-    qDebug() << "socket connected";
+    qDebug() << "[QML] socket connected";
     m_connectTimer->stop();
 
     m_socket->write("hello from Qt");
@@ -58,7 +58,7 @@ void MainWindow::onSocketConnected()
 
 void MainWindow::onSocketDisconnected()
 {
-    qDebug() << "socket disconnected";
+    qDebug() << "[QML] socket disconnected";
     m_connectTimer->start(5000);
 }
 
@@ -66,10 +66,10 @@ void MainWindow::onSocketError(QLocalSocket::LocalSocketError socketError)
 {
     switch (socketError) {
          case QLocalSocket::ServerNotFoundError:
-             qDebug() << "QLocalSocket::ServerNotFoundError";
+             qDebug() << "[QML] QLocalSocket::ServerNotFoundError";
              break;
          case QLocalSocket::ConnectionRefusedError:
-             qDebug() << "QLocalSocket::ConnectionRefusedError";
+             qDebug() << "[QML] QLocalSocket::ConnectionRefusedError";
              break;
          case QLocalSocket::PeerClosedError:
              break;
@@ -80,22 +80,22 @@ void MainWindow::onSocketError(QLocalSocket::LocalSocketError socketError)
 
 void MainWindow::onSocketReadyRead()
 {
-    qDebug() << "socket ready read";
+    qDebug() << "[QML] socket ready read";
 }
 
 void MainWindow::onSocketStateChange(QLocalSocket::LocalSocketState socketState)
 {
     switch(socketState) {
         case QLocalSocket::UnconnectedState:
-            qDebug() << "socket state UnconnectedState"; break;
+            qDebug() << "[QML] socket state UnconnectedState"; break;
         case QLocalSocket::ConnectingState:
-            qDebug() << "socket state ConnectingState"; break;
+            qDebug() << "[QML] socket state ConnectingState"; break;
         case QLocalSocket::ConnectedState:
-            qDebug() << "socket state ConnectedState"; break;
+            qDebug() << "[QML] socket state ConnectedState"; break;
         case QLocalSocket::ClosingState:
-            qDebug() << "socket state ClosingState"; break;
+            qDebug() << "[QML] socket state ClosingState"; break;
         default:
-            qDebug() << "unknow state"; break;
+            qDebug() << "[QML] unknow state"; break;
     }
 }
 
