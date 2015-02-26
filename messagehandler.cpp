@@ -18,7 +18,7 @@ MessageHandler::MessageHandler(QObject *parent) :
 
 void MessageHandler::onMessageAvailable(QByteArray ba)
 {
-    QByteArray msg(ba.trimmed());
+    QByteArray msg(ba);
 
     //check for empty message
     if (msg.startsWith('\0')) {
