@@ -18,8 +18,11 @@ MessageHandler::MessageHandler(QObject *parent) :
 
 void MessageHandler::onMessageAvailable(QByteArray ba)
 {
-    QByteArray msg(ba);
+    //trim \r\n characters
+    ba.replace('\n', "");
+    ba.replace('\r', "");
 
+    QByteArray msg(ba);
     //check for empty message
     if (msg.startsWith('\0')) {
         qDebug() << "[QML] message handler: null message";
