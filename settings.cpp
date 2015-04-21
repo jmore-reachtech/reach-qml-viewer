@@ -12,6 +12,18 @@ Settings::~Settings()
     qDebug() << "[QML] settings destructor";
 }
 
+void Settings::sync()
+{
+    QProcess p(this);
+    qDebug() << "executing synch";
+    p.start("sync");
+
+    QByteArray data;
+
+    while(p.waitForReadyRead())
+        data.append(p.readAll());
+}
+
 void Settings::setValue(const QString &key, const QVariant &value)
 {
     QSettings settings(APPLICATION_SETTINGS_FILE,QSettings::NativeFormat);
@@ -19,6 +31,7 @@ void Settings::setValue(const QString &key, const QVariant &value)
     settings.setValue(key, value);
     qDebug() << "[QML] set setting key: " << key << ":" << value ;
     settings.endGroup();
+    settings.sync();
 }
 
 QVariant Settings::getValue(const QString &key, const QVariant &defaultValue) const
@@ -39,4 +52,5 @@ void Settings::remove(const QString &key)
     settings.remove(key);
     qDebug() << "[QML] remove setting key: " << key;
     settings.endGroup();
+    settings.sync();
 }
