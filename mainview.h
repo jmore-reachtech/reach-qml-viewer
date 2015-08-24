@@ -19,6 +19,7 @@
 #include "connection.h"
 #include "messagehandler.h"
 #include "settings.h"
+#include "screen.h"
 
 class MainView : public QDeclarativeView
 {
@@ -41,6 +42,7 @@ private:
     Connection *m_connection;
     MessageHandler *m_messageHandler;
     Settings *m_settings;
+    Screen *m_screen;
     bool m_enableAck;
 };
 
