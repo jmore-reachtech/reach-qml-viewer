@@ -23,6 +23,8 @@ $(distdir): FORCE
 	cp messagehandler.cpp $(distdir)
 	cp messagehandler.h $(distdir)
 	cp qml-viewer.pro $(distdir)
+	cp screen.cpp $(distdir)
+	cp screen.h $(distdir)
 	cp settings.conf.example $(distdir)
 	cp settings.h $(distdir)
 	cp settings.cpp $(distdir)
