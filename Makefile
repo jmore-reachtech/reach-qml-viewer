@@ -1,5 +1,5 @@
 package = qml-viewer
-version = 1.0.7
+version = 1.0.8
 tarname = $(package)
 distdir = $(tarname)-$(version)
 
@@ -22,6 +22,8 @@ $(distdir): FORCE
 	cp messagehandler.cpp $(distdir)
 	cp messagehandler.h $(distdir)
 	cp qml-viewer.pro $(distdir)
+	cp screen.cpp $(distdir)
+	cp screen.h $(distdir)
 	cp settings.conf.example $(distdir)
 	cp systemdefs.h $(distdir)
 

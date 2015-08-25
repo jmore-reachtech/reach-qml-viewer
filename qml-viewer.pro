@@ -21,12 +21,14 @@ SOURCES += main.cpp\
     connection.cpp \
     mainview.cpp \
     messagehandler.cpp \
-    settings.cpp
+    settings.cpp \
+    screen.cpp
 
 HEADERS  += \
     connection.h \
     mainview.h \
     messagehandler.h \
     systemdefs.h \
-    settings.h
+    settings.h \
+    screen.h
 
