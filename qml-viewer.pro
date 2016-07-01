@@ -22,7 +22,8 @@ SOURCES += main.cpp\
     mainview.cpp \
     messagehandler.cpp \
     settings.cpp \
-    screen.cpp
+    screen.cpp \
+    watchdog.cpp
 
 HEADERS  += \
     connection.h \
@@ -30,5 +31,6 @@ HEADERS  += \
     messagehandler.h \
     systemdefs.h \
     settings.h \
-    screen.h
+    screen.h \
+    watchdog.h
 

@@ -19,6 +19,7 @@
 #include "messagehandler.h"
 #include "settings.h"
 #include "screen.h"
+#include "watchdog.h"
 
 class MainView : public QQuickView
 {
@@ -42,6 +43,7 @@ private:
     MessageHandler *m_messageHandler;
     Settings *m_settings;
     Screen *m_screen;
+    Watchdog *m_watchdog;
     bool m_enableAck;
 };
 
