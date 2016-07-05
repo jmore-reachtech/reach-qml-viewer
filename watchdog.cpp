@@ -17,7 +17,7 @@ Watchdog::~Watchdog()
 
 bool Watchdog::start()
 {
-    char *dev = WATCHDOGDEV;
+    const char *dev = QByteArray(WATCHDOGDEV).constData();
     fd = open(dev, O_RDWR);
 
     if (fd == -1)
@@ -27,6 +27,7 @@ bool Watchdog::start()
         return false;
     }
 
+    qDebug() << "[QML] starting watchdog timer";
     m_started = true;
     return true;
 }
@@ -46,6 +47,7 @@ void Watchdog::stop()
     /* Closing the watchdog device will deactivate the watchdog. */
     close(fd);
     m_started = false;
+    qDebug() << "[QML] stopped watchdog timer";
 }
 
 bool Watchdog::setInterval(int interval)
@@ -65,6 +67,7 @@ bool Watchdog::setInterval(int interval)
         return false;
     }
 
+    qDebug() << "[QML] set interval: " << interval;
     return true;
 }
 
@@ -88,6 +91,7 @@ bool Watchdog::keepAlive()
 {
     int size = 0;
     size =  write(fd, "W", 1);
+    qDebug() << "[QML] watchdog kicked";
     return size;
 }
 
