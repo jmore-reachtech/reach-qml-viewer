@@ -18,14 +18,16 @@ public:
     ~Watchdog();
 
 signals:
-    void watchdogError();
+    void watchdogError(QString err);
 
 public slots:
     bool start();
+    bool isStarted();
     void stop();
     bool setInterval(int interval);
     int getInterval();
     bool keepAlive();
+    bool lastBootByWatchDog();
 
 private:
     int fd;

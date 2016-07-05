@@ -23,11 +23,17 @@ bool Watchdog::start()
     if (fd == -1)
     {
         qDebug() << "[QML] Watchdog Error.  Open failed on " << dev;
+        emit watchdogError(QString("Watchdog open failed on ").append(dev));
         return false;
     }
 
     m_started = true;
     return true;
+}
+
+bool Watchdog::isStarted()
+{
+    return m_started;
 }
 
 void Watchdog::stop()
@@ -44,11 +50,18 @@ void Watchdog::stop()
 
 bool Watchdog::setInterval(int interval)
 {
+    if (interval < 30)
+    {
+        qDebug() << "[QML] Watchdog error : set interval failed.  Interval must be greater than 30 seconds.";
+        emit watchdogError("Interval must be greater than 30 seconds");
+        return false;
+    }
+
     if (ioctl(fd, WDIOC_SETTIMEOUT, &interval) != 0) {
         qDebug() << "[QML] Watchdog error : set interval failed.";
         if (m_started)
             stop();
-        emit watchdogError();
+        emit watchdogError("Set interval failed.  Watchdog may not have been started.");
         return false;
     }
 
@@ -65,7 +78,7 @@ int Watchdog::getInterval()
         qDebug() << "[QML] Watchdog error: get interval failed.";
         if (m_started)
             stop();
-        emit watchdogError();
+        emit watchdogError("Get interval failed.  Watchdog may not have been started.");
     }
 
     return 0;
@@ -76,4 +89,21 @@ bool Watchdog::keepAlive()
     int size = 0;
     size =  write(fd, "W", 1);
     return size;
+}
+
+bool Watchdog::lastBootByWatchDog()
+{
+    int bootstatus;
+    if (ioctl(fd, WDIOC_GETBOOTSTATUS, &bootstatus) == 0) {
+        if (bootstatus != 0)
+            return true;
+    }
+    else{
+        qDebug() << "[QML] Watchdog error: get boot status failed.";
+        if (m_started)
+            stop();
+        emit watchdogError("Get boot status failed.  Watchdog may not have been started.");
+    }
+
+    return false;
 }
