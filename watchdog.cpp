@@ -8,11 +8,6 @@ Watchdog::Watchdog(QObject *parent) :
 
 Watchdog::~Watchdog()
 {
-    if (m_started)
-    {
-        stop();
-        qDebug() << "watchdog destructor";
-    }
 }
 
 bool Watchdog::start()
@@ -67,7 +62,7 @@ bool Watchdog::setInterval(int interval)
         return false;
     }
 
-    qDebug() << "[QML] set interval: " << interval;
+    qDebug() << "[QML] watchdog set interval: " << interval;
     return true;
 }
 
@@ -78,7 +73,7 @@ int Watchdog::getInterval()
         return interval;
     }
     else {
-        qDebug() << "[QML] Watchdog error: get interval failed.";
+        qDebug() << "[QML] watchdog error: get interval failed";
         if (m_started)
             stop();
         emit watchdogError("Get interval failed.  Watchdog may not have been started.");
@@ -91,7 +86,7 @@ bool Watchdog::keepAlive()
 {
     int size = 0;
     size =  write(fd, "W", 1);
-    qDebug() << "[QML] watchdog kicked";
+    qDebug() << "[QML] watchdog kicked.";
     return size;
 }
 
@@ -103,7 +98,7 @@ bool Watchdog::lastBootByWatchDog()
             return true;
     }
     else{
-        qDebug() << "[QML] Watchdog error: get boot status failed.";
+        qDebug() << "[QML] watchdog error: get boot status failed.";
         if (m_started)
             stop();
         emit watchdogError("Get boot status failed.  Watchdog may not have been started.");

@@ -37,6 +37,12 @@ MainView::~MainView()
 {
 }
 
+void MainView::handleSigTerm()
+{
+    // shut down the watchdog timer if it was started
+    if (m_watchdog->isStarted())
+        m_watchdog->stop();
+}
 
 void MainView::onMessageAvailable(const QString &item, const QString &property, const QVariant &value)
 {
@@ -68,6 +74,8 @@ void MainView::onMessageSyntaxError(const QByteArray &msg)
     if(m_enableAck) {
         m_connection->sendMessage("SYNERR");
     }
+
+    qDebug() << "[QML] message syntax error: " << msg;
 }
 
 void MainView::enableLookupAck(bool enable)
@@ -92,5 +100,6 @@ void MainView::onConnectionClosed()
 {
     qDebug() << "[QML] connection closed";
 }
+
 
 

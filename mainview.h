@@ -33,6 +33,8 @@ public slots:
     void onMessageAvailable(const QString &item, const QString &property, const QVariant &value);
     void onMessageSyntaxError(const QByteArray &msg);
     void enableLookupAck(bool enable);
+    // Qt signal handler.
+    void handleSigTerm();
 
 private slots:
     void onConnectionReady();

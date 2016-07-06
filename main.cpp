@@ -11,14 +11,25 @@
 #include <QGuiApplication>
 #include <QSettings>
 #include <QFileInfo>
-
+#include <signal.h>
 #include "mainview.h"
 #include "systemdefs.h"
+
+static void unixSignalHandler(int signum) {
+    qDebug("[QML] main.cpp::unixSignalHandler(). signal = %s\n", strsignal(signum));
+
+    /*
+     * Make sure your Qt application gracefully quits.
+     * NOTE - purpose for calling qApp->exit(0):
+     *      1. Forces the Qt framework's "main event loop `qApp->exec()`" to quit looping.
+     *      2. Also emits the QGuiApplication::aboutToQuit() signal. This signal is used for cleanup code.
+     */
+    qApp->exit(0);
+}
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
-
     QGuiApplication::setOrganizationName("Reach Technology");
     QGuiApplication::setOrganizationDomain("reachtech.com");
     QGuiApplication::setApplicationName("Qml Viewer");
@@ -67,7 +78,15 @@ int main(int argc, char *argv[])
 
     settings.endGroup();
 
+    /* Set a signal handler for a power down or a control-c */
+    if (signal(SIGTERM, unixSignalHandler) == SIG_ERR) {
+        qDebug() << "[QML] an error occurred while setting a signal terminate handler";
+    }
+    if (signal(SIGINT, unixSignalHandler) == SIG_ERR) {
+        qDebug() << "[QML] an error occurred while setting a signal interrupt handler";
+    }
+    QObject::connect(&app, SIGNAL(aboutToQuit()), &w, SLOT(handleSigTerm()) );
+
     w.show();
-    
     return app.exec();
 }
