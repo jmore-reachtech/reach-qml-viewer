@@ -16,7 +16,7 @@
 #include "systemdefs.h"
 
 static void unixSignalHandler(int signum) {
-    qDebug("[QML] main.cpp::unixSignalHandler(). signal = %s\n", strsignal(signum));
+    qDebug("[QML] main.cpp::unixSignalHandler(). signal = %s", strsignal(signum));
 
     /*
      * Make sure your Qt application gracefully quits.

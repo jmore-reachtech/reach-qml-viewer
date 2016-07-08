@@ -6,4 +6,5 @@ hearbeat_interval=0
 full_screen=true
 hide_curosr=true
 screensaver_timeout=30
+enable_watchdog=true
 
