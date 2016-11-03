@@ -9,6 +9,7 @@
 #include "systemdefs.h"
 #include <QFile>
 #include <QTextStream>
+#include <QDir>
 
 #define BRIGHTNESS "/sys/class/backlight/backlight.22/brightness"
 
