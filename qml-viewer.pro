@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 # this needs to stay in sync with the Makefile
-VERSION = 1.0.8
+VERSION = 1.0.9
 
 QT       += network quick
 
@@ -13,6 +13,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = qml-viewer
 TEMPLATE = app
+target.path = /application/bin
+INSTALLS += target
 
 # add #define for the version
 DEFINES += APP_VERSION=\\\"$$VERSION\\\"
