@@ -1,5 +1,5 @@
 package = qml-viewer
-version = 1.0.9
+version = 1.1.0
 tarname = $(package)
 distdir = $(tarname)-$(version)
 
@@ -12,6 +12,8 @@ $(distdir).tar.gz: $(distdir)
 $(distdir): FORCE
 	mkdir $(distdir)
 	cp Makefile $(distdir)
+	cp beep.cpp $(distdir)
+	cp beep.h $(distdir)	
 	cp connection.cpp $(distdir)
 	cp connection.h $(distdir)
 	cp main.cpp $(distdir)

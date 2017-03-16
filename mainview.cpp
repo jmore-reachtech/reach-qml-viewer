@@ -20,10 +20,13 @@ MainView::MainView(QWindow *parent) :
   ,m_watchdog(new Watchdog(this))
   ,m_enableAck(false)
 {
+    m_beep = new Beep(this);
+
     this->rootContext()->setContextProperty("connection", m_connection);
     this->rootContext()->setContextProperty("settings", m_settings);
     this->rootContext()->setContextProperty("screen", m_screen);
     this->rootContext()->setContextProperty("watchdog", m_watchdog);
+    this->rootContext()->setContextProperty("beeper", m_beep);
 
     connect(m_connection,SIGNAL(readyToSend()),this,SLOT(onConnectionReady()));
     connect(m_connection,SIGNAL(notReadyToSend()),this,SLOT(onConnectionClosed()));
