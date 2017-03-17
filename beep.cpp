@@ -81,6 +81,14 @@ bool Beep::openwave(const QString &path)
                     break;
             }
 
+            register int err;
+            // Set the audio card's hardware parameters (sample rate, bit resolution, etc)
+            if ((err = snd_pcm_set_params(m_playbackHandle, m_format, SND_PCM_ACCESS_RW_INTERLEAVED, m_waveChannels, m_waveRate, 1, 100000)) < 0)
+            {
+                qDebug("[QML] can't set sound parameters: %s\n", snd_strerror(err));
+                return false;
+            }
+
         }
     }
 
@@ -92,13 +100,7 @@ void Beep::play()
     if (m_wavePtr && isOpen())
     {
         register snd_pcm_uframes_t	count, frames;
-        register int err;
-        // Set the audio card's hardware parameters (sample rate, bit resolution, etc)
-        if ((err = snd_pcm_set_params(m_playbackHandle, m_format, SND_PCM_ACCESS_RW_INTERLEAVED, m_waveChannels, m_waveRate, 1, 100000)) < 0)
-        {
-            qDebug("[QML] can't set sound parameters: %s\n", snd_strerror(err));
-            return;
-        }
+        snd_pcm_prepare(m_playbackHandle);
 
         // Output the wave data
         count = 0;
