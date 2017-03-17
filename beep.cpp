@@ -5,13 +5,11 @@ Beep::Beep(QObject *parent) :
 {
     m_wavePtr = NULL;
     m_open = false;
-    m_waveFileLoaded = false;
 }
 
 Beep::~Beep()
 {
-    if (isOpen())
-        deinit();
+    deinit();
     if (m_wavePtr) delete(m_wavePtr);
 }
 
@@ -83,7 +81,6 @@ bool Beep::openwave(const QString &path)
         }
     }
 
-    m_waveFileLoaded = true;
     return true;
 }
 

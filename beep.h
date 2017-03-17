@@ -116,7 +116,6 @@ private:
 
     bool m_open;
 
-    bool m_waveFileLoaded;
 };
 
 #endif // BEEP_H
