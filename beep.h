@@ -87,7 +87,7 @@ public slots:
 
 private slots:
     unsigned char compareID(const unsigned char * id, unsigned char * ptr);
-    unsigned char loadWaveFile(const char *fn);
+    bool loadWaveFile(const char *fn);
 
 private:
     // Handle to ALSA (audio card's) playback port

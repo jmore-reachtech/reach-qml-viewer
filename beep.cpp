@@ -41,6 +41,7 @@ void Beep::deinit()
     {
         snd_pcm_close(m_playbackHandle);
         m_open = false;
+        qDebug() << "[QML] sound card closed";
     }
 }
 
@@ -54,8 +55,10 @@ bool Beep::openwave(const QString &path)
     // No wave data loaded yet
     m_wavePtr = NULL;
 
-    if (!loadWaveFile(path.toUtf8().data())){
-
+    if (!loadWaveFile(path.toUtf8().data())) {
+        return false;
+    }
+    else {
         // Open audio card we wish to use for playback
         if (isOpen()) {
 
@@ -92,7 +95,10 @@ void Beep::play()
         register int err;
         // Set the audio card's hardware parameters (sample rate, bit resolution, etc)
         if ((err = snd_pcm_set_params(m_playbackHandle, m_format, SND_PCM_ACCESS_RW_INTERLEAVED, m_waveChannels, m_waveRate, 1, 100000)) < 0)
+        {
             qDebug("[QML] can't set sound parameters: %s\n", snd_strerror(err));
+            return;
+        }
 
         // Output the wave data
         count = 0;
@@ -131,25 +137,27 @@ unsigned char Beep::compareID(const unsigned char *id, unsigned char *ptr)
     return(1);
 }
 
-unsigned char Beep::loadWaveFile(const char *fn)
+bool Beep::loadWaveFile(const char *fn)
 {
-    const char *message;
     FILE_head head;
     register int inHandle;
 
     if ((inHandle = open(fn, O_RDONLY)) == -1)
-        message = "Could not open wave file.";
-
-    // Read in IFF File header
+    {
+        qDebug() << "[QML] could not open wave file:" << fn ;
+        return false;
+    }
     else
     {
+        // Read in IFF File header
         if (read(inHandle, &head, sizeof(FILE_head)) == sizeof(FILE_head))
         {
             // Is it a RIFF and WAVE?
             if (!compareID(&Riff[0], &head.ID[0]) || !compareID(&Wave[0], &head.Type[0]))
             {
-                message = "is not a WAVE file";
-                goto bad;
+                close(inHandle);
+                qDebug() << "[QML] " << fn << "is not a wave file.";
+                return false;
             }
 
             // Read in next chunk header
@@ -166,8 +174,9 @@ unsigned char Beep::loadWaveFile(const char *fn)
                     // Can't handle compressed WAVE files
                     if (format.wFormatTag != 1)
                     {
-                        message = "compressed WAVE not supported";
-                        goto bad;
+                        close(inHandle);
+                        qDebug() << "[QML] compressed wave file is not supported";
+                        return false;
                     }
 
                     m_waveBits = (unsigned char)format.wBitsPerSample;
@@ -181,21 +190,23 @@ unsigned char Beep::loadWaveFile(const char *fn)
                     // Size of wave data is head.Length. Allocate a buffer and read in the wave data
                     if (!(m_wavePtr = (unsigned char *)malloc(head.Length)))
                     {
-                        message = "won't fit in RAM";
-                        goto bad;
+                        close(inHandle);
+                        qDebug() << "[QML] wave file won't fit in RAM";
+                        return false;
                     }
 
                     if (read(inHandle, m_wavePtr, head.Length) != head.Length)
                     {
+                        close(inHandle);
                         free(m_wavePtr);
-                        break;
+                        return false;
                     }
 
                     // Store size (in frames)
                     m_waveSize = (head.Length * 8) / ((unsigned int)m_waveBits * (unsigned int)m_waveChannels);
 
                     close(inHandle);
-                    return(0);
+                    break;
                 }
 
                 // ============================ Skip this chunk ===============================
@@ -206,13 +217,10 @@ unsigned char Beep::loadWaveFile(const char *fn)
                 }
             }
         }
-
-        message = "is a bad WAVE file";
-bad:	close(inHandle);
     }
 
-    qDebug("[QML] %s %s\n", fn, message);
-    return(1);
+    qDebug("[QML] beeper wave file loaded %s", fn);
+    return true;
 
 }
 
