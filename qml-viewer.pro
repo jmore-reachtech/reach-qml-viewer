@@ -5,9 +5,11 @@
 #-------------------------------------------------
 
 # this needs to stay in sync with the Makefile
-VERSION = 1.0.9
+VERSION = 1.1.0
 
 QT       += network quick
+
+LIBS += -lasound
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,7 +27,8 @@ SOURCES += main.cpp\
     messagehandler.cpp \
     settings.cpp \
     screen.cpp \
-    watchdog.cpp
+    watchdog.cpp \
+    beep.cpp
 
 HEADERS  += \
     connection.h \
@@ -34,5 +37,6 @@ HEADERS  += \
     systemdefs.h \
     settings.h \
     screen.h \
-    watchdog.h
+    watchdog.h \
+    beep.h
 

@@ -20,6 +20,7 @@
 #include "settings.h"
 #include "screen.h"
 #include "watchdog.h"
+#include "beep.h"
 
 class MainView : public QQuickView
 {
@@ -46,6 +47,7 @@ private:
     Settings *m_settings;
     Screen *m_screen;
     Watchdog *m_watchdog;
+    Beep *m_beep;
     bool m_enableAck;
 };
 
