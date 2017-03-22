@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDebug>
+#include <QProcess>
 #include <alsa/asoundlib.h>
 #include <alsa/control.h>
 #include <sys/types.h>
@@ -33,7 +34,7 @@ typedef struct _CHUNK_head
 
 // WAVE fmt chunk
 typedef struct _FORMAT {
-    short				wFormatTag;
+    short			wFormatTag;
     unsigned short	wChannels;
     unsigned int	dwSamplesPerSec;
     unsigned int	dwAvgBytesPerSec;
@@ -81,41 +82,44 @@ public slots:
     bool openwave(const QString &path);
     void deinit();
     void play();
+    void play(const int frequency, const int duration);
     bool isOpen();
     bool init();
+    bool init(const int frequency, const int duration);
+    int duration();
+    int frequency();
+    bool isSoundCard();
 
 
 private slots:
     unsigned char compareID(const unsigned char * id, unsigned char * ptr);
     bool loadWaveFile(const char *fn);
+    QString execute(QString command);
+
 
 private:
     // Handle to ALSA (audio card's) playback port
     snd_pcm_t *m_playbackHandle;
-
     // Handle to our callback thread
-    snd_async_handler_t	*m_callbackHandle;
-
+    //snd_async_handler_t	*m_callbackHandle;
     // Points to loaded WAVE file's data
     unsigned char *m_wavePtr;
-
     // Size (in frames) of loaded WAVE file's data
     snd_pcm_uframes_t m_waveSize;
-
     // Sample rate
     unsigned short m_waveRate;
-
     // Bit resolution
     unsigned char m_waveBits;
-
     // Number of channels in the wave file
     unsigned char m_waveChannels;
-
     // bit format of wave file
     snd_pcm_format_t m_format;
-
+    // is the sound card open
     bool m_open;
 
+    // For the modules with no soundcard
+    int m_duration;
+    int m_frequency;
 };
 
 #endif // BEEP_H

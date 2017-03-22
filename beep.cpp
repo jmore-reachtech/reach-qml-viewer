@@ -5,12 +5,15 @@ Beep::Beep(QObject *parent) :
 {
     m_wavePtr = NULL;
     m_open = false;
+    m_duration = 2000;
+    m_frequency = 50;
 }
 
 Beep::~Beep()
 {
     deinit();
-    if (m_wavePtr) delete(m_wavePtr);
+    if (m_wavePtr)
+        delete(m_wavePtr);
 }
 
 bool Beep::init()
@@ -32,13 +35,40 @@ bool Beep::init()
 
     m_open = true;
     return true;
+}
+
+bool Beep::init(const int frequency, const int duration)
+{
+    m_frequency = frequency;
+    m_duration = duration;
+    qDebug("[QML] beeper frequency %d and duration %d set", frequency, duration);
+    return true;
+}
+
+int Beep::duration()
+{
+    return m_duration;
+}
+
+int Beep::frequency()
+{
+    return m_frequency;
+}
+
+bool Beep::isSoundCard()
+{
+    QString test = execute("aplay -l");
+    if (test.indexOf("Dummy") >= 0)
+        return false;
+    else
+        return true;
 
 }
 
 void Beep::deinit()
 {
-    if (isOpen())
-    {
+    // check if we need to close the sound card
+    if (isOpen() && m_wavePtr) {
         snd_pcm_close(m_playbackHandle);
         m_open = false;
         qDebug() << "[QML] sound card closed";
@@ -99,7 +129,9 @@ void Beep::play()
 {
     if (m_wavePtr && isOpen())
     {
-        register snd_pcm_uframes_t	count, frames;
+        register snd_pcm_uframes_t	count;
+        int frames;
+
         snd_pcm_prepare(m_playbackHandle);
 
         // Output the wave data
@@ -126,6 +158,29 @@ void Beep::play()
         if (count == m_waveSize)
             snd_pcm_drain(m_playbackHandle);
     }
+    else
+        play(m_frequency, m_duration);
+}
+
+void Beep::play(const int frequency, const int duration)
+{
+    execute(QString("beep -f ").append(QString::number(frequency).append(" -d ").append(QString::number(duration))));
+}
+
+QString Beep::execute(QString command)
+{
+    QProcess p(this);
+    p.setProcessChannelMode(QProcess::MergedChannels);
+    qDebug() << "executing " << command << "\n";
+
+    p.start(command);
+
+    QByteArray data;
+
+    while(p.waitForReadyRead())
+        data.append(p.readAll());
+
+    return QString::fromLatin1(data.data());
 }
 
 unsigned char Beep::compareID(const unsigned char *id, unsigned char *ptr)
