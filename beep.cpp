@@ -65,6 +65,23 @@ bool Beep::isSoundCard()
 
 }
 
+void Beep::setVolume(int volume)
+{
+    if (volume >=0 && volume <= 100)
+    {
+        m_volume = volume;
+        QString output = execute(QString("amixer set PCM ").append(QString::number(volume).append("%")));
+        qDebug() << "[QML]" << output;
+    }
+    else
+        qDebug() << "{QML] amixer error: volume must be set between 0 and 100";
+}
+
+int Beep::volume()
+{
+    return m_volume;
+}
+
 void Beep::deinit()
 {
     // check if we need to close the sound card

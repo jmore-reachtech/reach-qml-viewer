@@ -89,7 +89,8 @@ public slots:
     int duration();
     int frequency();
     bool isSoundCard();
-
+    void setVolume(int volume);
+    int volume();
 
 private slots:
     unsigned char compareID(const unsigned char * id, unsigned char * ptr);
@@ -116,6 +117,8 @@ private:
     snd_pcm_format_t m_format;
     // is the sound card open
     bool m_open;
+    // sound card volume
+    int m_volume;
 
     // For the modules with no soundcard
     int m_duration;
