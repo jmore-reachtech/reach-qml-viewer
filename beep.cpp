@@ -22,10 +22,12 @@ bool Beep::init()
         qDebug() << "{QML] sound card is already open";
         return true;
     }
-
+    int mode = SND_PCM_NONBLOCK;
+     // mode =0;
+     mode = SND_PCM_ASYNC;
     // Open audio card we wish to use for playback
     register int err;
-    if ((err = snd_pcm_open(&m_playbackHandle, &SoundCardPortName[0], SND_PCM_STREAM_PLAYBACK, 0)) < 0)
+    if ((err = snd_pcm_open(&m_playbackHandle, &SoundCardPortName[0], SND_PCM_STREAM_PLAYBACK, mode)) < 0)
     {
         qDebug("[QML] can't open audio %s: %s\n", &SoundCardPortName[0], snd_strerror(err));
         return false;
@@ -297,5 +299,4 @@ bool Beep::loadWaveFile(const char *fn)
     return true;
 
 }
-
 
